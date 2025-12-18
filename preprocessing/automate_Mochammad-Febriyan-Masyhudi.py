@@ -10,15 +10,16 @@ OUTPUT_DIR = os.path.join(BASE_DIR, "bank_leads_preprocessing")
 OUTPUT_FILE = os.path.join(OUTPUT_DIR, "bank_preprocessing.csv")
 
 def load_metadata():
-    if not os.path.exists(METADATA_PATH):
-        print(f"Error: Metadata tidak ditemukan di {METADATA_PATH}")
-        return None
     with open(METADATA_PATH, "r") as f:
         return json.load(f)
 
 def clean_and_feature_engineer(df, metadata):
     df = df.copy()
-    
+    target = None
+    if 'deposit' in df.columns:
+        df['deposit'] = df['deposit'].map({'yes': 1, 'no': 0})
+        target = df['deposit']
+
     # 1. QUARTER MAPPING
     mapping_quarter = metadata['mappings']['quarter']
     if 'month' in df.columns:
@@ -75,11 +76,12 @@ def clean_and_feature_engineer(df, metadata):
 
         df_encoded = df_encoded[expected_columns]
 
+    if target is not None:
+        df_encoded['deposit'] = target.values
+
     return df_encoded
 
 def run_automation():
-    print("Memulai Proses Otomatisasi Preprocessing...")
-    
     metadata = load_metadata()
     if metadata is None: return
     
