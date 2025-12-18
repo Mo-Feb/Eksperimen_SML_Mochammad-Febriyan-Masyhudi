@@ -27,3 +27,13 @@ jobs:
         with:
           name: preprocessed-bank-data
           path: preprocessing/bank_leads_preprocessing/
+      
+      - name: Commit and Push changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add preprocessing/bank_leads_preprocessing/bank_preprocessing.csv
+          git diff --quiet && git diff --staged --quiet || git commit -m "Automated: Update preprocessed data [skip ci]"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
