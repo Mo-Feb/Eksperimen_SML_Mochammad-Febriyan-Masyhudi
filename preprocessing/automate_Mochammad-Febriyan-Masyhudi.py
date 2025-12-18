@@ -67,15 +67,12 @@ def clean_and_feature_engineer(df, metadata):
 
     # 9. ONE-HOT ENCODING
     df_encoded = pd.get_dummies(df)
-    
-    # Memastikan kolom sesuai dengan model_input_columns di metadata
     expected_columns = metadata.get('model_input_columns', [])
     if expected_columns:
-        # Tambah kolom yang hilang dengan isi 0
         for col in expected_columns:
             if col not in df_encoded.columns:
                 df_encoded[col] = 0
-        # Urutkan dan filter kolom agar presisi
+
         df_encoded = df_encoded[expected_columns]
 
     return df_encoded
@@ -83,7 +80,6 @@ def clean_and_feature_engineer(df, metadata):
 def run_automation():
     print("Memulai Proses Otomatisasi Preprocessing...")
     
-    # Load Data & Metadata
     metadata = load_metadata()
     if metadata is None: return
     
@@ -91,12 +87,10 @@ def run_automation():
         print(f"Error: Dataset mentah tidak ditemukan di {INPUT_PATH}")
         return
 
-    df_raw = pd.read_csv(INPUT_PATH, sep=None, engine='python') # sep=None agar auto-detect semicolon/comma
+    df_raw = pd.read_csv(INPUT_PATH, sep=None, engine='python')
     
-    # Jalankan Preprocessing
     df_clean = clean_and_feature_engineer(df_raw, metadata)
     
-    # Simpan Output
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     df_clean.to_csv(OUTPUT_FILE, index=False)
     
