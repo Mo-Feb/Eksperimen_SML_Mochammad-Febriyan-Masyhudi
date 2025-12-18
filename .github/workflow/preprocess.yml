@@ -23,7 +23,7 @@ jobs:
         run: python preprocessing/automate_Mochammad-Febriyan-Masyhudi.py
 
       - name: Upload Clean Dataset
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: preprocessed-bank-data
           path: preprocessing/bank_leads_preprocessing/
